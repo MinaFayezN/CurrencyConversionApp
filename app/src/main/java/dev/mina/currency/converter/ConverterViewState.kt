@@ -1,10 +1,12 @@
-package dev.mina.currency
+package dev.mina.currency.converter
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.ObservableField
+import dev.mina.currency.divideBy
+import dev.mina.currency.multiplyBy
 import java.math.BigDecimal
 
-class MainViewState : BaseObservable() {
+class ConverterViewState : BaseObservable() {
 
     private val rate = BigDecimal(1.0)
 
