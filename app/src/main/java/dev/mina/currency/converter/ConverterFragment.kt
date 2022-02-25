@@ -27,9 +27,14 @@ class ConverterFragment : Fragment() {
 
     private val viewModel: ConverterViewModel by viewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentConverterBinding.inflate(inflater, container, false).also {
             it.viewState = viewState

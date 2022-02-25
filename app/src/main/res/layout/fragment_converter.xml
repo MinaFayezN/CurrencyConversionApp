@@ -20,9 +20,8 @@
             android:id="@+id/et_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:digits="0123456789."
             android:ems="5"
-            android:hint="@{viewState.startingValue}"
+            android:hint="@string/hint"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:minHeight="48dp"
@@ -32,16 +31,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:textSource="@={viewState.from}"
-            tools:hint="1.0"
             tools:ignore="DuplicateSpeakableTextCheck" />
 
         <EditText
             android:id="@+id/et_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:digits="0123456789."
             android:ems="5"
-            android:hint="@{viewState.startingValue}"
+            android:hint="@string/hint"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:minHeight="48dp"
@@ -50,8 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/et_from"
             app:layout_constraintTop_toTopOf="parent"
-            app:textSource="@={viewState.to}"
-            tools:hint="1.0" />
+            app:textSource="@={viewState.to}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
