@@ -16,20 +16,64 @@
         android:layout_height="match_parent"
         tools:context=".converter.ConverterFragment">
 
+        <Spinner
+            android:id="@+id/sp_from"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_center"
+            app:layout_constraintEnd_toEndOf="@+id/et_from"
+            app:layout_constraintStart_toStartOf="@+id/et_from" />
+
+        <ImageButton
+            android:id="@+id/ib_swap"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/swap"
+            android:enabled="@{!viewState.itemsDisabled}"
+            app:layout_constraintBottom_toBottomOf="@id/sp_from"
+            app:layout_constraintEnd_toStartOf="@+id/sp_to"
+            app:layout_constraintStart_toEndOf="@+id/sp_from"
+            app:layout_constraintTop_toTopOf="@+id/sp_from"
+            app:srcCompat="@drawable/ic_swap" />
+
+        <Spinner
+            android:id="@+id/sp_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_center"
+            app:layout_constraintEnd_toEndOf="@+id/et_to"
+            app:layout_constraintStart_toStartOf="@+id/et_to" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <EditText
             android:id="@+id/et_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="5"
+            android:layout_marginVertical="8dp"
+            android:ems="6"
+            android:enabled="@{!viewState.itemsDisabled}"
             android:hint="@string/hint"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:minHeight="48dp"
             app:convert="@{viewState.convertFrom}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:selectAllOnFocus="true"
+            android:text="@string/initial"
             app:layout_constraintEnd_toStartOf="@id/et_to"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline_center"
             app:textSource="@={viewState.from}"
             tools:ignore="DuplicateSpeakableTextCheck" />
 
@@ -37,17 +81,32 @@
             android:id="@+id/et_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="5"
+            android:layout_marginVertical="8dp"
+            android:ems="6"
+            android:enabled="@{!viewState.itemsDisabled}"
             android:hint="@string/hint"
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:minHeight="48dp"
+            android:selectAllOnFocus="true"
             app:convert="@{viewState.convertTo}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/initial"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/et_from"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline_center"
             app:textSource="@={viewState.to}" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:enabled="@{!viewState.itemsDisabled}"
+            android:text="@string/details"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_from" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

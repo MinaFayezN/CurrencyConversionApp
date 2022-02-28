@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import dev.mina.currency.*
 import dev.mina.currency.databinding.FragmentConverterBinding
 
 @AndroidEntryPoint
 class ConverterFragment : Fragment() {
-
-    private val viewState by lazy { ConverterViewState() }
 
     /**
      * Using binding with this way is the recommended one by google
@@ -26,20 +25,23 @@ class ConverterFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: ConverterViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel
-    }
+    private val viewState by lazy { ConverterViewState(viewModel.from) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentConverterBinding.inflate(inflater, container, false).also {
+            it.lifecycleOwner = viewLifecycleOwner
             it.viewState = viewState
         }
+        uiObservations()
         return binding.root
+    }
+
+    private fun uiObservations() {
+        viewModel.rate.observe(viewLifecycleOwner, viewState::updateRate)
+        viewModel.loading.observeForSingleEvent(this, viewState.itemsDisabled::set)
     }
 
     override fun onDestroyView() {

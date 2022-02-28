@@ -1,20 +1,25 @@
 package dev.mina.currency.converter
 
 import androidx.databinding.BaseObservable
-import androidx.databinding.ObservableField
+import androidx.databinding.ObservableBoolean
+import androidx.lifecycle.MutableLiveData
 import dev.mina.currency.divideBy
 import dev.mina.currency.multiplyBy
 import java.math.BigDecimal
 
-private const val STARTING_VALUE = "1.0"
+class ConverterViewState(base: MutableLiveData<String>) : BaseObservable() {
+    val itemsDisabled = ObservableBoolean(false)
 
-class ConverterViewState : BaseObservable() {
+    private var rate = BigDecimal(1.0)
+    val from = base
+    val to = MutableLiveData<String>()
 
-    private val rate = BigDecimal(1.0)
-    val from = ObservableField<String>(STARTING_VALUE)
-    val to = ObservableField<String>()
+    val convertFrom: (String) -> Unit = { to.postValue(it multiplyBy rate) }
+    val convertTo: (String) -> Unit = { from.postValue(it divideBy rate) }
 
-    val convertFrom: (String) -> Unit = { to.set(it multiplyBy rate) }
-    val convertTo: (String) -> Unit = { from.set(it divideBy rate) }
+    fun updateRate(newRate: BigDecimal) {
+        this.rate = newRate
+        from.value?.let(convertFrom)
+    }
 }
 

@@ -96,9 +96,9 @@ class MockInterceptor @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val uri = chain.request().url.toUri().toString()
         val responseString = when {
-            uri.contains("symbols") -> MOCKED_SYMBOLS
-            uri.contains("latest") -> MOCKED_LATEST_RATES
-            uri.contains("convert") -> MOCKED_CONVERT
+            uri.startsWith("https://data.fixer.io/api/symbols") -> MOCKED_SYMBOLS
+            uri.startsWith("https://data.fixer.io/api/latest") -> MOCKED_LATEST_RATES
+            uri.startsWith("https://data.fixer.io/api/convert") -> MOCKED_CONVERT
             else -> ""
         }
 

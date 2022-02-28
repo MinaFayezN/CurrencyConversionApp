@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Currency Conversion</string>
     <string name="hint">0.0</string>
+    <string name="initial">1.0</string>
+    <string name="swap">Swap</string>
+    <string name="details">Details</string>
 </resources>
