@@ -137,7 +137,9 @@ private const val MOCKED_LATEST_RATES = "{\n" +
         "    \"rates\": {\n" +
         "        \"GBP\": 0.72007,\n" +
         "        \"JPY\": 107.346001,\n" +
-        "        \"EUR\": 0.813399\n" +
+        "        \"ALL\": 17.346001,\n" +
+        "        \"AFN\": 0.813399,\n" +
+        "        \"AED\": 0.8145499\n" +
         "    }\n" +
         "}"
 private const val MOCKED_SYMBOLS = "{\n" +

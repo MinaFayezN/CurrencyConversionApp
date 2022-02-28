@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import dev.mina.currency.*
 import dev.mina.currency.databinding.FragmentConverterBinding
+import dev.mina.currency.observeForSingleEvent
+
+private const val TAG = "ConverterFragment"
 
 @AndroidEntryPoint
 class ConverterFragment : Fragment() {
@@ -25,7 +27,7 @@ class ConverterFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: ConverterViewModel by viewModels()
-    private val viewState by lazy { ConverterViewState(viewModel.from) }
+    private val viewState by lazy { ConverterViewState(viewModel::updateSelected, viewModel::swap) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +43,18 @@ class ConverterFragment : Fragment() {
 
     private fun uiObservations() {
         viewModel.rate.observe(viewLifecycleOwner, viewState::updateRate)
+        viewModel.fromSymbols.observe(viewLifecycleOwner) {
+            viewState.fromSymbols.set(it)
+        }
+        viewModel.selectedFromLD.observeForSingleEvent(viewLifecycleOwner) {
+            viewState.selectedFrom.set(it)
+        }
+        viewModel.toSymbols.observe(viewLifecycleOwner) {
+            viewState.toSymbols.set(it)
+        }
+        viewModel.selectedToLD.observeForSingleEvent(viewLifecycleOwner) {
+            viewState.selectedTo.set(it)
+        }
         viewModel.loading.observeForSingleEvent(this, viewState.itemsDisabled::set)
     }
 

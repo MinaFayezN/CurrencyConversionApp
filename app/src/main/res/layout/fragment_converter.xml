@@ -21,10 +21,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
+            android:entries="@{viewState.fromSymbols}"
             android:minHeight="48dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline_center"
             app:layout_constraintEnd_toEndOf="@+id/et_from"
-            app:layout_constraintStart_toStartOf="@+id/et_from" />
+            app:layout_constraintStart_toStartOf="@+id/et_from"
+            app:newPosition="@{viewState.selectedFrom}"
+            app:onItemSelected="@{viewState.onFromItemChanged}" />
 
         <ImageButton
             android:id="@+id/ib_swap"
@@ -32,6 +35,7 @@
             android:layout_height="48dp"
             android:contentDescription="@string/swap"
             android:enabled="@{!viewState.itemsDisabled}"
+            android:onClick="@{viewState::onSwapClick}"
             app:layout_constraintBottom_toBottomOf="@id/sp_from"
             app:layout_constraintEnd_toStartOf="@+id/sp_to"
             app:layout_constraintStart_toEndOf="@+id/sp_from"
@@ -43,10 +47,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
+            android:entries="@{viewState.toSymbols}"
             android:minHeight="48dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline_center"
             app:layout_constraintEnd_toEndOf="@+id/et_to"
-            app:layout_constraintStart_toStartOf="@+id/et_to" />
+            app:layout_constraintStart_toStartOf="@+id/et_to"
+            app:newPosition="@{viewState.selectedTo}"
+            app:onItemSelected="@{viewState.onToItemChanged}" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_center"
@@ -68,9 +75,9 @@
             android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:minHeight="48dp"
-            app:convert="@{viewState.convertFrom}"
             android:selectAllOnFocus="true"
             android:text="@string/initial"
+            app:convert="@{viewState.convertFrom}"
             app:layout_constraintEnd_toStartOf="@id/et_to"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline_center"
@@ -89,8 +96,8 @@
             android:inputType="numberDecimal"
             android:minHeight="48dp"
             android:selectAllOnFocus="true"
-            app:convert="@{viewState.convertTo}"
             android:text="@string/initial"
+            app:convert="@{viewState.convertTo}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/et_from"
             app:layout_constraintTop_toBottomOf="@id/guideline_center"
