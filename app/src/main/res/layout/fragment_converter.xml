@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+    <import type="android.view.View"/>
 
         <variable
             name="viewState"
@@ -21,12 +22,15 @@
             android:id="@+id/shimmer_view_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="@{viewState.itemsDisabled ? View.VISIBLE : View.GONE }"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <include layout="@layout/converter_placeholder" />
+            <include
+                android:id="@+id/placeholder"
+                layout="@layout/converter_placeholder" />
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <Spinner
@@ -48,7 +52,7 @@
             android:layout_height="48dp"
             android:contentDescription="@string/swap"
             android:enabled="@{!viewState.itemsDisabled}"
-            android:onClick="@{viewState::onSwapClick}"
+            android:onClick="@{viewState::onButtonClick}"
             app:layout_constraintBottom_toBottomOf="@id/sp_from"
             app:layout_constraintEnd_toStartOf="@+id/sp_to"
             app:layout_constraintStart_toEndOf="@+id/sp_from"
@@ -117,11 +121,12 @@
             app:textSource="@={viewState.to}" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btn_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:enabled="@{!viewState.itemsDisabled}"
+            android:onClick="@{viewState::onButtonClick}"
             android:text="@string/details"
             android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"

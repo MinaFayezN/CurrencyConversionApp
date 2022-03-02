@@ -6,9 +6,10 @@ import androidx.databinding.Bindable
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
-import dev.mina.currency.ItemSelectedListener
+import dev.mina.currency.R
 import dev.mina.currency.divideBy
 import dev.mina.currency.multiplyBy
+import dev.mina.currency.ui.ItemSelectedListener
 import java.math.BigDecimal
 import java.util.*
 
@@ -17,6 +18,7 @@ private const val STARTING_VALUE = "1.0"
 class ConverterViewState(
     onSelectionChanged: (SelectedType, String) -> Unit,
     private val onSwapClick: () -> Unit,
+    private val onDetailsClick: (base: String) -> Unit,
 ) :
     BaseObservable() {
 
@@ -65,8 +67,11 @@ class ConverterViewState(
         }
     }
 
-    fun onSwapClick(view: View) {
-        onSwapClick.invoke()
+    fun onButtonClick(view: View) {
+        when (view.id) {
+            R.id.ib_swap -> onSwapClick.invoke()
+            R.id.btn_details -> onDetailsClick.invoke(selectedFrom.get()?.let { toSymbols.get()?.get(it) } ?: "")
+        }
     }
 
     fun updateRate(newRate: BigDecimal) {

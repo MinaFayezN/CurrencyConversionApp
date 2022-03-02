@@ -1,4 +1,4 @@
-package dev.mina.currency
+package dev.mina.currency.ui
 
 import android.view.View
 import android.widget.AdapterView

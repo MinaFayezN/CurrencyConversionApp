@@ -1,20 +1,17 @@
 package dev.mina.currency.converter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.mina.currency.SingleEvent
 import dev.mina.currency.data.LatestRates
-import dev.mina.currency.trigger
+import dev.mina.currency.utils.SingleEvent
+import dev.mina.currency.utils.trigger
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.util.*
 import javax.inject.Inject
-
-private const val TAG = "ConverterViewModel"
 
 @HiltViewModel
 class ConverterViewModel @Inject constructor(private val converterRepo: ConverterRepo) :
@@ -45,7 +42,6 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
     private var symbols: LinkedList<String>? = null
 
     init {
-        Log.d(TAG, "init viewModel")
         _loading.trigger(true)
         viewModelScope.launch {
             updateSymbols()
@@ -67,10 +63,11 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
     }
 
     private fun updateToList(newSymbols: LinkedList<String>) {
-        LinkedList(newSymbols).apply { remove(selectedFrom) }.also {
-            selectedTo = it[0]
-            _toSymbols.postValue(it)
-        }
+        if (selectedFrom.isNotEmpty())
+            LinkedList(newSymbols).apply { remove(selectedFrom) }.also {
+                _toSymbols.postValue(it)
+                selectedTo = it[0]
+            }
     }
 
     private suspend fun updateRates(base: String? = selectedFrom) {

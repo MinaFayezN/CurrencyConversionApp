@@ -1,11 +1,10 @@
-package dev.mina.currency
+package dev.mina.currency.ui
 
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.lifecycle.MutableLiveData
-
 
 object UIUtils {
     @BindingAdapter(value = ["textSource", "convert"])

@@ -9,5 +9,23 @@
         android:id="@+id/converterFragment"
         android:name="dev.mina.currency.converter.ConverterFragment"
         android:label="ConverterFragment"
-        tools:layout="@layout/fragment_converter" />
+        tools:layout="@layout/fragment_converter">
+        <action
+            android:id="@+id/startDetailsFragment"
+            app:destination="@id/detailsFragment">
+            <argument
+                android:name="base"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="dev.mina.currency.details.DetailsFragment"
+        android:label="DetailsFragment"
+        tools:layout="@layout/fragment_details" >
+        <argument
+            android:name="base"
+            app:argType="string" />
+    </fragment>
 </navigation>

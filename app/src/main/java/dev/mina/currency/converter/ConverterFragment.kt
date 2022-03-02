@@ -6,11 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.mina.currency.databinding.FragmentConverterBinding
-import dev.mina.currency.observeForSingleEvent
-
-private const val TAG = "ConverterFragment"
+import dev.mina.currency.utils.observeForSingleEvent
 
 @AndroidEntryPoint
 class ConverterFragment : Fragment() {
@@ -27,7 +26,13 @@ class ConverterFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: ConverterViewModel by viewModels()
-    private val viewState by lazy { ConverterViewState(viewModel::updateSelected, viewModel::swap) }
+    private val viewState by lazy {
+        ConverterViewState(
+            onSelectionChanged = viewModel::updateSelected,
+            onSwapClick = viewModel::swap,
+            onDetailsClick = this::navigateToDetails
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,26 +48,17 @@ class ConverterFragment : Fragment() {
 
     private fun uiObservations() {
         viewModel.rate.observe(viewLifecycleOwner, viewState::updateRate)
-        viewModel.fromSymbols.observe(viewLifecycleOwner) {
-            viewState.fromSymbols.set(it)
-        }
-        viewModel.selectedFromLD.observeForSingleEvent(viewLifecycleOwner) {
-            viewState.selectedFrom.set(it)
-        }
-        viewModel.toSymbols.observe(viewLifecycleOwner) {
-            viewState.toSymbols.set(it)
-        }
-        viewModel.selectedToLD.observeForSingleEvent(viewLifecycleOwner) {
-            viewState.selectedTo.set(it)
-        }
+        viewModel.fromSymbols.observe(viewLifecycleOwner, viewState.fromSymbols::set)
+        viewModel.toSymbols.observe(viewLifecycleOwner, viewState.toSymbols::set)
+        viewModel.selectedFromLD.observeForSingleEvent(viewLifecycleOwner,
+            viewState.selectedFrom::set)
+        viewModel.selectedToLD.observeForSingleEvent(viewLifecycleOwner, viewState.selectedTo::set)
         viewModel.loading.observeForSingleEvent(this) {
             viewState.itemsDisabled.set(it)
             if (it) {
                 binding.shimmerViewContainer.startShimmer()
-                binding.shimmerViewContainer.visibility = View.VISIBLE
             } else {
                 binding.shimmerViewContainer.stopShimmer()
-                binding.shimmerViewContainer.visibility = View.GONE
             }
         }
     }
@@ -70,5 +66,9 @@ class ConverterFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun navigateToDetails(base: String) {
+        findNavController().navigate(ConverterFragmentDirections.startDetailsFragment(base = base))
     }
 }

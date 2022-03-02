@@ -7,7 +7,7 @@
 
     <View
         android:id="@+id/sp_from"
-        android:layout_width="96dp"
+        android:layout_width="128dp"
         android:layout_height="48dp"
         android:layout_marginVertical="8dp"
         android:background="@color/gray_light_2"
@@ -27,7 +27,7 @@
 
     <View
         android:id="@+id/sp_to"
-        android:layout_width="96dp"
+        android:layout_width="128dp"
         android:layout_height="48dp"
         android:layout_marginVertical="8dp"
         android:background="@color/gray_light_2"
@@ -47,7 +47,7 @@
 
     <View
         android:id="@+id/et_from"
-        android:layout_width="96dp"
+        android:layout_width="128dp"
         android:layout_height="48dp"
         android:layout_marginVertical="8dp"
         android:background="@color/gray_light_2"
@@ -57,7 +57,7 @@
 
     <View
         android:id="@+id/et_to"
-        android:layout_width="96dp"
+        android:layout_width="128dp"
         android:layout_height="48dp"
         android:layout_marginVertical="8dp"
         android:background="@color/gray_light_2"
@@ -67,7 +67,7 @@
 
     <View
         android:id="@+id/button"
-        android:layout_width="96dp"
+        android:layout_width="128dp"
         android:layout_height="48dp"
         android:layout_marginVertical="8dp"
         android:background="@color/gray_light_2"

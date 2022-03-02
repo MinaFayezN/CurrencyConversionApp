@@ -29,7 +29,6 @@ class ConverterRepoImpl @Inject constructor(private val dataSource: FixerAPI) : 
 
     override suspend fun convert(from: String?, to: String?, amount: BigDecimal?): Converted =
         dataSource.convert(from = from, to = to, amount = amount)
-
 }
 
 fun List<String>.toParams(): String {
