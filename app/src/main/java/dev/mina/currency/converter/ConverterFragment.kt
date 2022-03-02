@@ -55,7 +55,16 @@ class ConverterFragment : Fragment() {
         viewModel.selectedToLD.observeForSingleEvent(viewLifecycleOwner) {
             viewState.selectedTo.set(it)
         }
-        viewModel.loading.observeForSingleEvent(this, viewState.itemsDisabled::set)
+        viewModel.loading.observeForSingleEvent(this) {
+            viewState.itemsDisabled.set(it)
+            if (it) {
+                binding.shimmerViewContainer.startShimmer()
+                binding.shimmerViewContainer.visibility = View.VISIBLE
+            } else {
+                binding.shimmerViewContainer.stopShimmer()
+                binding.shimmerViewContainer.visibility = View.GONE
+            }
+        }
     }
 
     override fun onDestroyView() {

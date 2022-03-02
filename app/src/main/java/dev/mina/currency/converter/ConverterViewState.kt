@@ -15,7 +15,7 @@ import java.util.*
 private const val STARTING_VALUE = "1.0"
 
 class ConverterViewState(
-    onSelectionChanged: (SelectedType, Int) -> Unit,
+    onSelectionChanged: (SelectedType, String) -> Unit,
     private val onSwapClick: () -> Unit,
 ) :
     BaseObservable() {
@@ -52,14 +52,16 @@ class ConverterViewState(
     @Bindable
     val onToItemChanged = object : ItemSelectedListener {
         override fun onItemSelected(position: Int) {
-            onSelectionChanged.invoke(SelectedType.TO, position)
+            onSelectionChanged.invoke(SelectedType.TO, toSymbols.get()?.get(position) ?: "")
+            selectedTo.set(position)
         }
     }
 
     @Bindable
     val onFromItemChanged = object : ItemSelectedListener {
         override fun onItemSelected(position: Int) {
-            onSelectionChanged.invoke(SelectedType.FROM, position)
+            onSelectionChanged.invoke(SelectedType.FROM, fromSymbols.get()?.get(position) ?: "")
+            selectedFrom.set(position)
         }
     }
 

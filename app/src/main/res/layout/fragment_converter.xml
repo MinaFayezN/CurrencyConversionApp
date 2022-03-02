@@ -10,11 +10,24 @@
             type="dev.mina.currency.converter.ConverterViewState" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".converter.ConverterFragment">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include layout="@layout/converter_placeholder" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <Spinner
             android:id="@+id/sp_from"

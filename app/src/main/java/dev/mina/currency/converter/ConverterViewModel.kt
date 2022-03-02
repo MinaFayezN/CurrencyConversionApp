@@ -35,8 +35,8 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
     private val _selectedToLD = MutableLiveData<SingleEvent<Int>>()
     val selectedToLD: LiveData<SingleEvent<Int>> = _selectedToLD
 
-    private var selectedFrom = 0 //Update Index base to be String Base
-    private var selectedTo = 0
+    private var selectedFrom: String = ""
+    private var selectedTo: String = ""
 
     private val _loading = MutableLiveData(SingleEvent(false))
     val loading: LiveData<SingleEvent<Boolean>> = _loading
@@ -67,42 +67,39 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
     }
 
     private fun updateToList(newSymbols: LinkedList<String>) {
-        _toSymbols.postValue(LinkedList(newSymbols).apply {
-            remove(newSymbols[selectedFrom])
-        })
+        LinkedList(newSymbols).apply { remove(selectedFrom) }.also {
+            selectedTo = it[0]
+            _toSymbols.postValue(it)
+        }
     }
 
-    private suspend fun updateRates(base: String? = _fromSymbols.value?.get(selectedFrom)) {
-        latestRates = converterRepo.getLatestRates(base = base,
-            symbols = symbols)
+    private suspend fun updateRates(base: String? = selectedFrom) {
+        latestRates = converterRepo.getLatestRates(base = base, symbols = symbols)
     }
 
     private fun publishRate() {
-        latestRates?.rates?.get(_toSymbols.value?.get(selectedTo))?.let(_rate::postValue)
+        latestRates?.rates?.get(selectedTo)?.let(_rate::postValue)
     }
 
     fun swap() {
         viewModelScope.launch {
             _loading.trigger(true)
-            val newFromBase = _toSymbols.value?.get(selectedTo)
-            val newToSelection = _fromSymbols.value?.get(selectedFrom)
-            selectedFrom = _fromSymbols.value?.indexOf(newFromBase) ?: 0
-            symbols?.let {
-                _toSymbols.postValue(LinkedList(it).apply {
-                    remove(newFromBase)
-                }.also { newList ->
-                    selectedTo = newList.indexOf(newToSelection)
-                })
+            val newFromBase = selectedTo
+            val newToSelection = selectedFrom
+            selectedFrom = newFromBase
+            val newToList: LinkedList<String>? = symbols?.let { allSymbols ->
+                LinkedList(allSymbols).apply { remove(selectedFrom) }.also(_toSymbols::postValue)
             }
-            _selectedFromLD.trigger(selectedFrom)
-            _selectedToLD.trigger(selectedTo)
+            selectedTo = newToSelection
+            _selectedFromLD.trigger(_fromSymbols.value?.indexOf(selectedFrom) ?: 0)
+            _selectedToLD.trigger(newToList?.indexOf(selectedTo) ?: 0)
             updateRates()
             publishRate()
             _loading.trigger(false)
         }
     }
 
-    fun updateSelected(type: SelectedType, position: Int) {
+    fun updateSelected(type: SelectedType, position: String) {
         viewModelScope.launch {
             when (type) {
                 SelectedType.FROM -> {
