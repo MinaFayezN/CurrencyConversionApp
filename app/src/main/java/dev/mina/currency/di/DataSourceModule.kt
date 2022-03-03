@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.mina.currency.BuildConfig
 import dev.mina.currency.data.FixerAPI
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -69,7 +70,7 @@ class DataSourceModule {
         val originalHttpUrl = original.url
         val url = originalHttpUrl
             .newBuilder()
-            .addQueryParameter("access_key", "API_KEY")
+            .addQueryParameter("access_key", BuildConfig.apiKey) // PLease add the Key on your local.properties file or use mocked responses instead
             .build()
         val requestBuilder = original.newBuilder().url(url)
         val request = requestBuilder.build()
@@ -85,7 +86,7 @@ class DataSourceModule {
         @Named("KeyInterceptor") keyInterceptor: Interceptor,
     ) = OkHttpClient
         .Builder()
-        .addInterceptor(mockInterceptor)
+        .addInterceptor(mockInterceptor) // Use this if you want to mock responses instead of getting response from API
         .addInterceptor(loggingInterceptor)
         .addInterceptor(keyInterceptor)
         .build()

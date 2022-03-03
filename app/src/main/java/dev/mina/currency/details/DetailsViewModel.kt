@@ -6,6 +6,7 @@ import dev.mina.currency.data.HistoricRate
 import dev.mina.currency.data.TimeSeriesRates
 import dev.mina.currency.utils.SingleEvent
 import dev.mina.currency.utils.trigger
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class DetailsViewModel @Inject constructor(
 
     init {
         _loading.trigger(true)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val base = state.get<String>("base")
             val symbols = state.get<String?>("symbols")
             val resp = detailsRepo.getTimeSeriesRates(base = base, symbols = symbols)

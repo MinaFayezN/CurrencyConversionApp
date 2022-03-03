@@ -18,7 +18,7 @@ data class Symbols(
     @SerializedName("symbols")
     val symbols: Map<String, String>? = null,
     @SerializedName("error")
-    val error: Error? = Error(),
+    val error: Error? = null,
 )
 
 data class LatestRates(
@@ -33,7 +33,7 @@ data class LatestRates(
     @SerializedName("rates")
     val rates: Map<String, BigDecimal>? = null,
     @SerializedName("error")
-    val error: Error? = Error(),
+    val error: Error? = null,
 )
 
 data class Converted(
@@ -50,7 +50,7 @@ data class Converted(
     @SerializedName("result")
     val result: BigDecimal? = null,
     @SerializedName("error")
-    val error: Error? = Error(),
+    val error: Error? = null,
 )
 
 data class Query(
@@ -61,7 +61,7 @@ data class Query(
     @SerializedName("amount")
     val amount: Int? = null,
     @SerializedName("error")
-    val error: Error? = Error(),
+    val error: Error? = null,
 )
 
 data class Info(
@@ -70,7 +70,7 @@ data class Info(
     @SerializedName("rate")
     val rate: BigDecimal? = null,
     @SerializedName("error")
-    val error: Error? = Error(),
+    val error: Error? = null,
 )
 
 data class HistoricRate(

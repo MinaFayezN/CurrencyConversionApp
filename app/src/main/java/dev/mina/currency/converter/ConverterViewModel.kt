@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.mina.currency.data.LatestRates
 import dev.mina.currency.utils.SingleEvent
 import dev.mina.currency.utils.trigger
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.util.*
@@ -38,23 +39,33 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
     private val _loading = MutableLiveData(SingleEvent(false))
     val loading: LiveData<SingleEvent<Boolean>> = _loading
 
+    private val _error = MutableLiveData<SingleEvent<String>>()
+    val error: LiveData<SingleEvent<String>> = _error
+
     private var latestRates: LatestRates? = null
     private var symbols: LinkedList<String>? = null
 
     init {
         _loading.trigger(true)
-        viewModelScope.launch {
-            updateSymbols()
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!updateSymbols()) return@launch // handle all apis with same way
             updateRates()
             publishRate()
             _loading.trigger(false)
         }
     }
 
-    private suspend fun updateSymbols() {
-        symbols = converterRepo.getSymbols().symbols?.let { LinkedList(it.keys) }?.also {
-            updateFromList(it)
-            updateToList(it)
+    private suspend fun updateSymbols(): Boolean {
+        val response = converterRepo.getSymbols()
+        return response.error?.let {
+            _error.trigger(it.info ?: "API Error Happened")
+            false
+        } ?: run {
+            symbols = response.symbols?.let { LinkedList(it.keys) }?.also {
+                updateFromList(it)
+                updateToList(it)
+            }
+            true
         }
     }
 
@@ -71,6 +82,7 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
     }
 
     private suspend fun updateRates(base: String? = selectedFrom) {
+        // we can check if  converterRepo.getLatestRates().error != null to get API errors
         latestRates = converterRepo.getLatestRates(base = base, symbols = symbols)
     }
 
@@ -79,7 +91,7 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
     }
 
     fun swap() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _loading.trigger(true)
             val newFromBase = selectedTo
             val newToSelection = selectedFrom
@@ -97,7 +109,7 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
     }
 
     fun updateSelected(type: SelectedType, position: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             when (type) {
                 SelectedType.FROM -> {
                     _loading.trigger(true)

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import dev.mina.currency.databinding.FragmentDetailsBinding
 import dev.mina.currency.utils.observeForSingleEvent
+import java.math.BigDecimal
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
@@ -49,6 +50,18 @@ class DetailsFragment : Fragment() {
             } else {
                 binding.shimmerViewContainer.stopShimmer()
             }
+        }
+        viewModel.timeSeries.observe(viewLifecycleOwner) { response ->
+            response.rates ?: return@observe
+            response.rates.keys.map {
+                HistoricItem(date = it,
+                    fromText = arguments.base,
+                    fromRate = "1.0",
+                    toText = arguments.to,
+                    toRate = "${response.rates[it]?.get(arguments.to) ?: BigDecimal(0)}"
+                )
+            }.let(viewState.historicAdapter::updateData)
+
         }
     }
 

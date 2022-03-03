@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -62,6 +63,19 @@ class ConverterFragment : Fragment() {
                 binding.shimmerViewContainer.stopShimmer()
             }
         }
+        viewModel.error.observeForSingleEvent(this, this::showDialog)
+    }
+
+    private fun showDialog(message: String) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("API Error")
+        builder.setMessage(message)
+        builder.setCancelable(false)
+        builder.setPositiveButton("Refresh") { _, _ ->
+            // handle refreshing page
+        }
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
     override fun onDestroyView() {
@@ -72,6 +86,7 @@ class ConverterFragment : Fragment() {
     private fun navigateToDetails() {
         findNavController().navigate(ConverterFragmentDirections.startDetailsFragment(
             base = viewModel.retrieveCurrentBase(),
+            to = viewModel.retrieveCurrentTo(),
             symbols = viewModel.toSymbols.value?.toParams()))
     }
 }
