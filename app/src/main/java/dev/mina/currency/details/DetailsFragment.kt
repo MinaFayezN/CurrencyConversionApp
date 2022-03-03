@@ -73,6 +73,9 @@ class DetailsFragment : Fragment() {
             viewState.historicAdapter.updateData(response)
             setData(response)
         }
+        viewModel.otherRates.observe(viewLifecycleOwner) { response ->
+            viewState.othersAdapter.updateData(response)
+        }
     }
 
     override fun onDestroyView() {

@@ -6,6 +6,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import dev.mina.currency.R
 import dev.mina.currency.databinding.HistoricItemBinding
+import dev.mina.currency.databinding.OthersItemBinding
 import dev.mina.currency.ui.adapters.GenericListAdapter
 
 class DetailsViewState : BaseObservable() {
@@ -20,6 +21,15 @@ class DetailsViewState : BaseObservable() {
         bindData = { binding, data, _ -> binding.viewState?.update(data) },
         isSameID = { old, new -> old.fromText == new.fromText && old.toText == new.toText },
         isContent = { old, new -> old.fromRate == new.fromRate && old.toRate == new.toRate },
+    )
+
+    @Bindable
+    val othersAdapter = GenericListAdapter<OthersItemBinding, String>(
+        layoutId = R.layout.others_item,
+        setViewState = { it.viewState = OthersItemViewState() },
+        bindData = { binding, data, _ -> binding.viewState?.update(data) },
+        isSameID = { old, new -> old == new },
+        isContent = { old, new -> old == new },
     )
 
 }
@@ -48,6 +58,29 @@ class HistoricalItemViewState : BaseObservable() {
         toText.set(data.toText)
         toRate.set(data.toRate)
     }
+}
+
+class OthersItemViewState : BaseObservable() {
+
+    @Bindable
+    var date = ObservableField<String>()
+
+    @Bindable
+    var type = ObservableField<TextType>()
+
+    fun update(data: String) {
+        if (data.contains("Date: ")) {
+            type.set(TextType.TITLE)
+        } else {
+            type.set(TextType.RATE)
+        }
+        date.set(data)
+    }
+}
+
+enum class TextType {
+    TITLE,
+    RATE
 }
 
 data class HistoricItem(

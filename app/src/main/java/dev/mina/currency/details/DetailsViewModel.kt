@@ -2,7 +2,6 @@ package dev.mina.currency.details
 
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.mina.currency.data.HistoricRate
 import dev.mina.currency.utils.SingleEvent
 import dev.mina.currency.utils.trigger
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +18,8 @@ class DetailsViewModel @Inject constructor(
     private val _loading = MutableLiveData(SingleEvent(false))
     val loading: LiveData<SingleEvent<Boolean>> = _loading
 
-    private val _historicalRates = MutableLiveData(HistoricRate())
-    val historicalRates: LiveData<HistoricRate> = _historicalRates
+    private val _otherRates = MutableLiveData<List<String>>()
+    val otherRates: LiveData<List<String>> = _otherRates
 
     private val _timeSeries = MutableLiveData<List<HistoricItem>>()
     val timeSeries: LiveData<List<HistoricItem>> = _timeSeries
@@ -42,6 +41,12 @@ class DetailsViewModel @Inject constructor(
                 )
             }?.also {
                 _timeSeries.postValue(it)
+            }
+            resp.rates?.flatMap {
+                listOf(listOf("Date: ${it.key}"),
+                    it.value.toList().map { rate -> "${rate.first}: ${rate.second}" })
+            }?.also { list ->
+                _otherRates.postValue(list.flatten())
             }
             _loading.trigger(false)
         }
