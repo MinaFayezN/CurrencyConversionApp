@@ -18,7 +18,7 @@ private const val STARTING_VALUE = "1.0"
 class ConverterViewState(
     onSelectionChanged: (SelectedType, String) -> Unit,
     private val onSwapClick: () -> Unit,
-    private val onDetailsClick: (base: String) -> Unit,
+    private val onDetailsClick: () -> Unit,
 ) :
     BaseObservable() {
 
@@ -70,7 +70,7 @@ class ConverterViewState(
     fun onButtonClick(view: View) {
         when (view.id) {
             R.id.ib_swap -> onSwapClick.invoke()
-            R.id.btn_details -> onDetailsClick.invoke(selectedFrom.get()?.let { toSymbols.get()?.get(it) } ?: "")
+            R.id.btn_details -> onDetailsClick.invoke()
         }
     }
 

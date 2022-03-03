@@ -14,6 +14,8 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -22,6 +24,25 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DataSourceModule {
+
+    @Singleton
+    @Provides
+    @Named("CurrentDate")
+    fun provideCurrentDate(): String = calculateDate(RequiredMonth.CURRENT)
+
+    @Singleton
+    @Provides
+    @Named("LastMonthDate")
+    fun provideDateMinusMonth(): String = calculateDate(RequiredMonth.PREVIOUS)
+
+    private fun calculateDate(requiredMonth: RequiredMonth): String {
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        cal.add(Calendar.MONTH, requiredMonth.value)
+        val format = SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH)
+        return format.format(cal.time)
+    }
+
 
     //region Retrofit
     @Singleton
@@ -32,7 +53,7 @@ class DataSourceModule {
     @Singleton
     @Provides
     @Named("MockInterceptor")
-    fun providesMockInterceptor() = MockInterceptor()
+    fun providesMockInterceptor() = MockInterceptor(provideDateMinusMonth())
 
     @Singleton
     @Provides
@@ -43,18 +64,16 @@ class DataSourceModule {
     @Singleton
     @Provides
     @Named("KeyInterceptor")
-    fun providesKeyInterceptor() = object : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val original = chain.request()
-            val originalHttpUrl = original.url
-            val url = originalHttpUrl
-                .newBuilder()
-                .addQueryParameter("access_key", "API_KEY")
-                .build()
-            val requestBuilder = original.newBuilder().url(url)
-            val request = requestBuilder.build()
-            return chain.proceed(request)
-        }
+    fun providesKeyInterceptor() = Interceptor { chain ->
+        val original = chain.request()
+        val originalHttpUrl = original.url
+        val url = originalHttpUrl
+            .newBuilder()
+            .addQueryParameter("access_key", "API_KEY")
+            .build()
+        val requestBuilder = original.newBuilder().url(url)
+        val request = requestBuilder.build()
+        chain.proceed(request)
     }
 
     @Singleton
@@ -92,13 +111,18 @@ class DataSourceModule {
     //endregion
 }
 
-class MockInterceptor @Inject constructor() : Interceptor {
+class MockInterceptor @Inject constructor(
+    @Named("LastMonthDate")
+    private val date: String?,
+) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val uri = chain.request().url.toUri().toString()
         val responseString = when {
             uri.startsWith("https://data.fixer.io/api/symbols") -> MOCKED_SYMBOLS
             uri.startsWith("https://data.fixer.io/api/latest") -> MOCKED_LATEST_RATES
             uri.startsWith("https://data.fixer.io/api/convert") -> MOCKED_CONVERT
+            uri.startsWith("https://data.fixer.io/api/timeseries") -> MOCKED_TIME_SERIES
+            uri.startsWith("https://data.fixer.io/api/$date") -> MOCKED_HISTORICAL
             else -> ""
         }
 
@@ -112,6 +136,11 @@ class MockInterceptor @Inject constructor() : Interceptor {
             .addHeader("content-type", "application/json")
             .build()
     }
+}
+
+enum class RequiredMonth(val value: Int) {
+    CURRENT(0),
+    PREVIOUS(-1)
 }
 
 private const val MOCKED_CONVERT = "{\n" +
@@ -149,6 +178,44 @@ private const val MOCKED_SYMBOLS = "{\n" +
         "    \"AFN\": \"Afghan Afghani\",\n" +
         "    \"ALL\": \"Albanian Lek\",\n" +
         "    \"AMD\": \"Armenian Dram\"\n" +
+        "    }\n" +
+        "}"
+
+private const val MOCKED_HISTORICAL = "{\n" +
+        "    \"success\": true,\n" +
+        "    \"historical\": true,\n" +
+        "    \"date\": \"2013-12-24\",\n" +
+        "    \"timestamp\": 1387929599,\n" +
+        "    \"base\": \"GBP\",\n" +
+        "    \"rates\": {\n" +
+        "        \"USD\": 1.636492,\n" +
+        "        \"EUR\": 1.196476,\n" +
+        "        \"CAD\": 1.739516\n" +
+        "    }\n" +
+        "}"
+
+private const val MOCKED_TIME_SERIES = "{\n" +
+        "    \"success\": true,\n" +
+        "    \"timeseries\": true,\n" +
+        "    \"start_date\": \"2012-05-01\",\n" +
+        "    \"end_date\": \"2012-05-03\",\n" +
+        "    \"base\": \"EUR\",\n" +
+        "    \"rates\": {\n" +
+        "        \"2012-05-01\":{\n" +
+        "          \"USD\": 1.322891,\n" +
+        "          \"AUD\": 1.278047,\n" +
+        "          \"CAD\": 1.302303\n" +
+        "        },\n" +
+        "        \"2012-05-02\": {\n" +
+        "          \"USD\": 1.315066,\n" +
+        "          \"AUD\": 1.274202,\n" +
+        "          \"CAD\": 1.299083\n" +
+        "        },\n" +
+        "        \"2012-05-03\": {\n" +
+        "          \"USD\": 1.314491,\n" +
+        "          \"AUD\": 1.280135,\n" +
+        "          \"CAD\": 1.296868\n" +
+        "        }\n" +
         "    }\n" +
         "}"
 

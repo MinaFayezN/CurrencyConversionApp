@@ -113,4 +113,7 @@ class ConverterViewModel @Inject constructor(private val converterRepo: Converte
             _loading.trigger(false)
         }
     }
+
+    fun retrieveCurrentBase() = selectedFrom
+    fun retrieveCurrentTo() = selectedTo
 }

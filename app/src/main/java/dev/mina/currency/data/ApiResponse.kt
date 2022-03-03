@@ -72,3 +72,33 @@ data class Info(
     @SerializedName("error")
     val error: Error? = Error(),
 )
+
+data class HistoricRate(
+    @SerializedName("success")
+    var success: Boolean? = null,
+    @SerializedName("historical")
+    var historical: Boolean? = null,
+    @SerializedName("date")
+    var date: String? = null,
+    @SerializedName("timestamp")
+    var timestamp: Int? = null,
+    @SerializedName("base")
+    var base: String? = null,
+    @SerializedName("rates")
+    val rates: Map<String, BigDecimal>? = null,
+)
+
+data class TimeSeriesRates(
+    @SerializedName("success")
+    val success: Boolean? = null,
+    @SerializedName("timeseries")
+    val timeSeries: Boolean? = null,
+    @SerializedName("start_date")
+    val startDate: String? = null,
+    @SerializedName("end_date")
+    val endDate: String? = null,
+    @SerializedName("base")
+    val base: String? = null,
+    @SerializedName("rates")
+    val rates: Map<String, Map<String, BigDecimal>>? = null,
+)

@@ -10,3 +10,7 @@ infix fun String.divideBy(factor: BigDecimal) =
 infix fun String.multiplyBy(factor: BigDecimal) =
     (toBigDecimalOrNull()?.multiply(factor) ?: 0.0).toString()
 
+
+fun List<String>.toParams(): String {
+    return toString().removeSurrounding("[", "]")
+}

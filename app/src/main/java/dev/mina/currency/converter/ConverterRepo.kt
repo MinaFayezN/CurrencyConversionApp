@@ -4,6 +4,7 @@ import dev.mina.currency.data.Converted
 import dev.mina.currency.data.FixerAPI
 import dev.mina.currency.data.LatestRates
 import dev.mina.currency.data.Symbols
+import dev.mina.currency.toParams
 import java.math.BigDecimal
 import javax.inject.Inject
 
@@ -29,8 +30,4 @@ class ConverterRepoImpl @Inject constructor(private val dataSource: FixerAPI) : 
 
     override suspend fun convert(from: String?, to: String?, amount: BigDecimal?): Converted =
         dataSource.convert(from = from, to = to, amount = amount)
-}
-
-fun List<String>.toParams(): String {
-    return toString().removeSurrounding("[", "]")
 }

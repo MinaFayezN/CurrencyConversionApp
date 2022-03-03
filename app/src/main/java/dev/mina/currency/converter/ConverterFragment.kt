@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.mina.currency.databinding.FragmentConverterBinding
+import dev.mina.currency.toParams
 import dev.mina.currency.utils.observeForSingleEvent
 
 @AndroidEntryPoint
@@ -68,7 +69,9 @@ class ConverterFragment : Fragment() {
         _binding = null
     }
 
-    private fun navigateToDetails(base: String) {
-        findNavController().navigate(ConverterFragmentDirections.startDetailsFragment(base = base))
+    private fun navigateToDetails() {
+        findNavController().navigate(ConverterFragmentDirections.startDetailsFragment(
+            base = viewModel.retrieveCurrentBase(),
+            symbols = viewModel.toSymbols.value?.toParams()))
     }
 }
